@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { db, auth } from '../firebase';
 import { collection, getDocs, doc, updateDoc } from 'firebase/firestore';
 import { styles } from '../styles';
-
+import Header from './Header';
 function PreTest() {
   const [questions, setQuestions] = useState([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -93,6 +93,7 @@ function PreTest() {
     <div style={styles.container}>
       <div style={styles.phoneFrame}>
         <div style={styles.content}>
+          <Header />
           <h2 style={styles.sectionTitle}>Ön Test</h2>
           
           {questions && questions.length > 0 ? (

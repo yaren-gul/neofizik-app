@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { db, auth } from '../firebase';
 import { doc, getDoc } from 'firebase/firestore';
 import { styles } from '../styles';
+import Header from './Header';
 
 function AtlasMap() {
   const [selectedRegion, setSelectedRegion] = useState(null);
@@ -24,13 +25,14 @@ function AtlasMap() {
 
   const handleLogout = () => {
     localStorage.clear();
-    navigate('/');
+    navigate('/login');
   };
 
   return (
     <div style={styles.container}>
       <div style={styles.phoneFrame}>
         <div style={{ ...styles.content, position: 'relative' }}>
+          <Header />
           <h2 style={styles.sectionTitle}>Muayene Atlası</h2>
           
           <div style={styles.mapImageWrapper}>
@@ -63,21 +65,8 @@ function AtlasMap() {
             Geri Dön
           </button>
 
-          <button 
-            style={{
-              marginTop: '10px', 
-              padding: '10px', 
-              backgroundColor: '#FF6B6B', 
-              color: 'white', 
-              border: 'none', 
-              borderRadius: '5px',
-              width: '100%',
-              cursor: 'pointer'
-            }} 
-            onClick={handleLogout}
-          >
-            Çıkış Yap
-          </button>
+         
+      
         </div>
       </div>
     </div>

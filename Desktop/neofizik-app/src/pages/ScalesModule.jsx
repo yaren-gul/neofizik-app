@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { styles } from '../styles';
-
+import Header from './Header';
 function ScalesModule() {
   const navigate = useNavigate();
 
@@ -9,6 +9,7 @@ function ScalesModule() {
     <div style={styles.container}>
       <div style={styles.phoneFrame}>
         <div style={styles.content}>
+          <Header />
           <h2 style={styles.sectionTitle}>Değerlendirme Ölçekleri</h2>
           <p style={{ textAlign: 'center', color: '#555', margin: '20px 0' }}>
             Klinik beceri, motivasyon ve kullanılabilirlik anketleri.

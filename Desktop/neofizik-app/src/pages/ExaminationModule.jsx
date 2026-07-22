@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { styles } from '../styles';
+import Header from './Header';
 
 function ExaminationModule() {
   const navigate = useNavigate();
@@ -9,6 +10,7 @@ function ExaminationModule() {
     <div style={styles.container}>
       <div style={styles.phoneFrame}>
         <div style={styles.content}>
+          <Header />
           <h2 style={styles.sectionTitle}>Baştan Ayağa Fizik Muayene</h2>
           <p style={{ textAlign: 'center', color: '#555', margin: '20px 0' }}>
             Fontanel değerlendirmesi, cilt bulguları ve sistem muayeneleri bu aşamada yer alır.

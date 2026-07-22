@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { db, auth } from '../firebase';
 import { doc, getDoc } from 'firebase/firestore';
 import { styles } from '../styles';
-
+import Header from './Header';
 function Results() {
   const [userData, setUserData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -47,6 +47,7 @@ function Results() {
     <div style={styles.container}>
       <div style={styles.phoneFrame}>
         <div style={styles.content}>
+          <Header />
           <h2 style={styles.mainTitle}>SINAV TAMAMLANDI</h2>
           <p style={{ textAlign: 'center', color: '#555', marginBottom: '20px' }}>
             Tebrikler! Değerlendirme başarıyla sonuçlandı.

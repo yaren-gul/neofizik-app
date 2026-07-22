@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { styles } from '../styles';
-
+import Header from './Header';
 function InfoForm() {
   const navigate = useNavigate();
 
@@ -16,6 +16,7 @@ function InfoForm() {
     <div style={styles.container}>
       <div style={styles.phoneFrame}>
         <div style={styles.content}>
+          <Header />
           <h2 style={styles.sectionTitle}>Tanıtıcı Bilgi Formu</h2>
           
           <p style={{ fontSize: '14px', color: '#555', textAlign: 'center', margin: '20px 0' }}>
@@ -33,7 +34,7 @@ function InfoForm() {
 
           <button 
             style={styles.textLink} 
-            onClick={() => navigate('/privacy-policy')}
+            onClick={() => navigate('/onboarding')}
           >
             Geri Dön
           </button>

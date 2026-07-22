@@ -1,3 +1,4 @@
+import OnboardingFlow from './pages/OnboardingFlow';
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
@@ -14,24 +15,29 @@ import ExaminationModule from './pages/ExaminationModule';
 import ReflexesModule from './pages/ReflexesModule';
 import ScalesModule from './pages/ScalesModule';
 import Certificate from './pages/Certificate';
+import ProtectedRoute from './pages/ProtectedRoute'; // Korumalı rota bileşeni
 
 function App() {
   return (
     <Router>
       <Routes>
+        {/* Herkesin erişebileceği genel sayfalar */}
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/onboarding" element={<ProtectedRoute><OnboardingFlow /></ProtectedRoute>} />
         <Route path="/register" element={<Register />} />
-        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-        <Route path="/info-form" element={<InfoForm />} />
-        <Route path="/pre-test" element={<PreTest />} />
-        <Route path="/results" element={<Results />} />
-        <Route path="/atlas-map" element={<AtlasMap />} />
-        <Route path="/vital-module" element={<VitalModule />} />
-        <Route path="/examination-module" element={<ExaminationModule />} />
-        <Route path="/reflexes-module" element={<ReflexesModule />} />
-        <Route path="/scales-module" element={<ScalesModule />} />
-        <Route path="/certificate" element={<Certificate />} />
+       
+
+        {/* Giriş yapılması gereken korumalı sayfalar */}
+        <Route path="/info-form" element={<ProtectedRoute><InfoForm /></ProtectedRoute>} />
+        <Route path="/pre-test" element={<ProtectedRoute><PreTest /></ProtectedRoute>} />
+        <Route path="/results" element={<ProtectedRoute><Results /></ProtectedRoute>} />
+        <Route path="/atlas-map" element={<ProtectedRoute><AtlasMap /></ProtectedRoute>} />
+        <Route path="/vital-module" element={<ProtectedRoute><VitalModule /></ProtectedRoute>} />
+        <Route path="/examination-module" element={<ProtectedRoute><ExaminationModule /></ProtectedRoute>} />
+        <Route path="/reflexes-module" element={<ProtectedRoute><ReflexesModule /></ProtectedRoute>} />
+        <Route path="/scales-module" element={<ProtectedRoute><ScalesModule /></ProtectedRoute>} />
+        <Route path="/certificate" element={<ProtectedRoute><Certificate /></ProtectedRoute>} />
       </Routes>
     </Router>
   );

@@ -21,7 +21,8 @@ function Register() {
         resultScore: 0
       });
       alert("Kayıt Başarılı!");
-      navigate('/privacy-policy');
+      localStorage.setItem('userLoggedIn', 'true');
+      navigate('/login');
     } catch (error) {
       alert("Hata: " + error.message);
     }
