@@ -14,8 +14,8 @@ function ReflexesModule() {
           <p style={{ textAlign: 'center', color: '#555', margin: '20px 0' }}>
             Moro, yakalama (grasp), emme ve adım atma gibi ilkel reflekslerin değerlendirilmesi.
           </p>
-          <button style={styles.primaryButton} onClick={() => navigate('/scales-module')}>
-            Ölçeklere Geç
+          <button style={styles.primaryButton} onClick={() =>navigate('/final-test')}>
+            Son Teste Geç
           </button>
           <button style={styles.textLink} onClick={() => navigate('/examination-module')}>
             Geri Dön

@@ -1,7 +1,7 @@
 import OnboardingFlow from './pages/OnboardingFlow';
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-
+import FinalTest from './pages/FinalTest';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -36,6 +36,7 @@ function App() {
         <Route path="/vital-module" element={<ProtectedRoute><VitalModule /></ProtectedRoute>} />
         <Route path="/examination-module" element={<ProtectedRoute><ExaminationModule /></ProtectedRoute>} />
         <Route path="/reflexes-module" element={<ProtectedRoute><ReflexesModule /></ProtectedRoute>} />
+        <Route path="/final-test" element={<FinalTest />} />
         <Route path="/scales-module" element={<ProtectedRoute><ScalesModule /></ProtectedRoute>} />
         <Route path="/certificate" element={<ProtectedRoute><Certificate /></ProtectedRoute>} />
       </Routes>
