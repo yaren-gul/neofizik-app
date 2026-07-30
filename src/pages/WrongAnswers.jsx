@@ -3,10 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { PhoneShell, Screen } from '../components/PhoneShell';
 import { TopBar, SectionTitle, PrimaryButton, Badge } from '../components/ui';
 import { colors, radius, font } from '../theme';
+import { userKey } from '../utils/session';
 
 export default function WrongAnswers() {
   const navigate = useNavigate();
-  const answerLog = JSON.parse(localStorage.getItem('finalTestAnswerLog') || '[]');
+  const answerLog = JSON.parse(localStorage.getItem(userKey('finalTestAnswerLog')) || '[]');
   const wrongOnes = answerLog.filter((a) => !a.isCorrect);
 
   return (

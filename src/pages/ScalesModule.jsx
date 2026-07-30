@@ -4,6 +4,7 @@ import { PhoneShell, Screen } from '../components/PhoneShell';
 import { TopBar, PrimaryButton, Card } from '../components/ui';
 import ProgressRing from '../components/ProgressRing';
 import { colors, radius, font } from '../theme';
+import { userKey } from '../utils/session';
 
 const SCALES = [
   { id: 1, title: 'Klinik Beceri Özyeterliliği Ölçeği', url: 'https://forms.google.com/' },
@@ -14,7 +15,7 @@ const SCALES = [
 export default function ScalesModule() {
   const navigate = useNavigate();
   const [completed, setCompleted] = useState(() => {
-    if (localStorage.getItem('scalesCompleted') === 'true') {
+    if (localStorage.getItem(userKey('scalesCompleted')) === 'true') {
       return SCALES.reduce((acc, s) => ({ ...acc, [s.id]: true }), {});
     }
     return {};
@@ -28,7 +29,7 @@ export default function ScalesModule() {
     const updated = { ...completed, [scale.id]: true };
     setCompleted(updated);
     if (Object.values(updated).filter(Boolean).length === SCALES.length) {
-      localStorage.setItem('scalesCompleted', 'true');
+      localStorage.setItem(userKey('scalesCompleted'), 'true');
     }
   };
 

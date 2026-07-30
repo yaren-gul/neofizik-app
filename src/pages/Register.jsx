@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { auth, db } from '../firebase';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
+import { setActiveUser } from '../utils/session';
 import { PhoneShell, Screen } from '../components/PhoneShell';
 import { PrimaryButton, FieldInput, TextLink, SectionTitle } from '../components/ui';
 import Logo from '../components/Logo';
@@ -25,6 +26,7 @@ function Register() {
         isTestCompleted: false,
         resultScore: 0
       });
+      setActiveUser(userCredential.user.uid);
       localStorage.setItem('userLoggedIn', 'true');
       navigate('/login');
     } catch (error) {

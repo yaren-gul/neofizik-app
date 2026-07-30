@@ -5,6 +5,7 @@ import { collection, getDocs, doc, updateDoc } from 'firebase/firestore';
 import { PhoneShell, Screen } from '../components/PhoneShell';
 import { TopBar, ProgressBar, Badge, OptionButton, PrimaryButton, SecondaryButton, Card, InlineNote } from '../components/ui';
 import { colors, font } from '../theme';
+import { userKey } from '../utils/session';
 
 const LETTERS = ['A', 'B', 'C', 'D'];
 
@@ -18,7 +19,7 @@ function PreTest() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const isCompleted = localStorage.getItem('isTestCompleted') === 'true';
+    const isCompleted = localStorage.getItem(userKey('isTestCompleted')) === 'true';
     if (isCompleted) navigate('/results');
   }, [navigate]);
 
@@ -61,11 +62,11 @@ function PreTest() {
     const total = questions.length;
     const calculatedScore = Math.round((finalScoreCount / total) * 100);
 
-    localStorage.setItem('isTestCompleted', 'true');
-    localStorage.setItem('correctCount', finalScoreCount);
+    localStorage.setItem(userKey('isTestCompleted'), 'true');
+    localStorage.setItem(userKey('correctCount'), finalScoreCount);
     // Not: Ön test sonuçları katılımcıya gösterilmez (doğru/yanlış gizli tutulur).
     // Yanıt kaydı yalnızca araştırma/final rapor amaçlı saklanır.
-    localStorage.setItem('preTestAnswerLog', JSON.stringify(finalLog));
+    localStorage.setItem(userKey('preTestAnswerLog'), JSON.stringify(finalLog));
 
     try {
       if (auth.currentUser) {

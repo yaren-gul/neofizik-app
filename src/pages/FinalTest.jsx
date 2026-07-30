@@ -5,6 +5,7 @@ import { collection, getDocs, doc, updateDoc } from 'firebase/firestore';
 import { PhoneShell, Screen } from '../components/PhoneShell';
 import { TopBar, ProgressBar, Badge, OptionButton, PrimaryButton, SecondaryButton, Card, InlineNote } from '../components/ui';
 import { colors, font } from '../theme';
+import { userKey } from '../utils/session';
 
 const LETTERS = ['A', 'B', 'C', 'D'];
 
@@ -18,7 +19,7 @@ export default function FinalTest() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const isCompleted = localStorage.getItem('isFinalTestCompleted') === 'true';
+    const isCompleted = localStorage.getItem(userKey('isFinalTestCompleted')) === 'true';
     if (isCompleted) navigate('/scales-module');
   }, [navigate]);
 
@@ -63,9 +64,9 @@ export default function FinalTest() {
     const total = questions.length;
     const calculatedScore = Math.round((finalScoreCount / total) * 100);
 
-    localStorage.setItem('isFinalTestCompleted', 'true');
-    localStorage.setItem('finalTestCorrectCount', finalScoreCount);
-    localStorage.setItem('finalTestAnswerLog', JSON.stringify(finalLog));
+    localStorage.setItem(userKey('isFinalTestCompleted'), 'true');
+    localStorage.setItem(userKey('finalTestCorrectCount'), finalScoreCount);
+    localStorage.setItem(userKey('finalTestAnswerLog'), JSON.stringify(finalLog));
 
     try {
       if (auth.currentUser) {

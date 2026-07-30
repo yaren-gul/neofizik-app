@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth, db } from '../firebase';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { setActiveUser } from '../utils/session';
 import { PhoneShell, Screen } from '../components/PhoneShell';
 import { PrimaryButton, FieldInput } from '../components/ui';
 import Logo from '../components/Logo';
@@ -20,6 +21,7 @@ export default function Login() {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, loginData.email, loginData.password);
       const user = userCredential.user;
+      setActiveUser(user.uid);
       localStorage.setItem('userLoggedIn', 'true');
 
       const userDocRef = doc(db, "users", user.uid);

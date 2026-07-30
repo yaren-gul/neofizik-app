@@ -6,6 +6,7 @@ import { PhoneShell, Screen } from '../components/PhoneShell';
 import { TopBar, PrimaryButton, SecondaryButton, Badge } from '../components/ui';
 import { MODULES, isModuleComplete } from '../data/modulesData';
 import { colors, radius, font } from '../theme';
+import { userKey } from '../utils/session';
 
 function Medal({ score }) {
   return (
@@ -64,9 +65,9 @@ export default function FinalReport() {
     );
   }
 
-  const answerLog = JSON.parse(localStorage.getItem('finalTestAnswerLog') || '[]');
+  const answerLog = JSON.parse(localStorage.getItem(userKey('finalTestAnswerLog')) || '[]');
   const total = userData?.finalTestTotalQuestions ?? answerLog.length;
-  const correct = userData?.finalTestCorrectCount ?? Number(localStorage.getItem('finalTestCorrectCount') || 0);
+  const correct = userData?.finalTestCorrectCount ?? Number(localStorage.getItem(userKey('finalTestCorrectCount')) || 0);
   const wrong = Math.max(total - correct, 0);
   const score = userData?.finalTestScore ?? (total > 0 ? Math.round((correct / total) * 100) : 0);
   const hasWrongAnswers = answerLog.some((a) => !a.isCorrect);
@@ -92,7 +93,7 @@ export default function FinalReport() {
   }
 
   const allModulesComplete = MODULES.every((m) => isModuleComplete(m.id));
-  const scalesCompleted = localStorage.getItem('scalesCompleted') === 'true';
+  const scalesCompleted = localStorage.getItem(userKey('scalesCompleted')) === 'true';
 
   return (
     <PhoneShell>

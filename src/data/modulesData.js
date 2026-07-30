@@ -4,6 +4,8 @@
 // "Baş Muayenesi" ve "Yüz Muayenesi" olarak görüldü — geri kalanı standart yenidoğan
 // fizik muayenesi sırasına göre taslak olarak eklendi, gerçek liste netleşince güncellenebilir.
 
+import { userKey } from '../utils/session';
+
 export const MODULES = [
   {
     id: 'vital',
@@ -75,14 +77,14 @@ const KEY = 'moduleProgress';
 
 export function loadProgress() {
   try {
-    return JSON.parse(localStorage.getItem(KEY) || '{}');
+    return JSON.parse(localStorage.getItem(userKey(KEY)) || '{}');
   } catch {
     return {};
   }
 }
 
 export function saveProgress(progress) {
-  localStorage.setItem(KEY, JSON.stringify(progress));
+  localStorage.setItem(userKey(KEY), JSON.stringify(progress));
 }
 
 // Bir konunun ilerlemesini al: 0 | 50 | 100

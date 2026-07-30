@@ -3,12 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { PhoneShell, Screen } from '../components/PhoneShell';
 import { PrimaryButton } from '../components/ui';
 import { colors, radius, font } from '../theme';
+import { userKey } from '../utils/session';
 
 function Results() {
   const navigate = useNavigate();
 
-  const answerLog = JSON.parse(localStorage.getItem('preTestAnswerLog') || '[]');
-  const total = answerLog.length || Number(localStorage.getItem('correctCount') || 0);
+  const answerLog = JSON.parse(localStorage.getItem(userKey('preTestAnswerLog')) || '[]');
+  const total = answerLog.length || Number(localStorage.getItem(userKey('correctCount')) || 0);
 
   return (
     <PhoneShell>
