@@ -4,6 +4,7 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth, db } from '../firebase';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { setActiveUser } from '../utils/session';
+import { codeToEmail } from '../utils/participantCode';
 import { PhoneShell, Screen } from '../components/PhoneShell';
 import { PrimaryButton, FieldInput } from '../components/ui';
 import Logo from '../components/Logo';
@@ -11,7 +12,7 @@ import BabyOrbit from '../components/BabyOrbit';
 import { colors, font } from '../theme';
 
 export default function Login() {
-  const [loginData, setLoginData] = useState({ email: '', password: '' });
+  const [loginData, setLoginData] = useState({ code: '', password: '' });
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -19,24 +20,33 @@ export default function Login() {
     e.preventDefault();
     setLoading(true);
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, loginData.email, loginData.password);
+      const email = codeToEmail(loginData.code);
+      const userCredential = await signInWithEmailAndPassword(auth, email, loginData.password);
       const user = userCredential.user;
       setActiveUser(user.uid);
       localStorage.setItem('userLoggedIn', 'true');
 
       const userDocRef = doc(db, "users", user.uid);
       const userDoc = await getDoc(userDocRef);
+      setDoc(userDocRef, { lastLoginAt: new Date().toISOString() }, { merge: true }).catch(() => {});
 
       if (userDoc.exists()) {
         const userData = userDoc.data();
-        if (userData.isTestCompleted === true) {
+        localStorage.setItem('userRole', userData.role === 'admin' ? 'admin' : 'participant');
+
+        if (userData.role === 'admin') {
+          navigate('/admin', { replace: true });
+        } else if (userData.isTestCompleted === true) {
           navigate('/results', { replace: true });
         } else {
           navigate('/onboarding', { replace: true });
         }
       } else {
+        // Yönetici panelinden oluşturulmamış eski/manuel bir hesap için yedek davranış.
+        localStorage.setItem('userRole', 'participant');
         await setDoc(userDocRef, {
-          email: user.email,
+          participantCode: loginData.code.trim().toUpperCase(),
+          role: 'participant',
           isTestCompleted: false,
           createdAt: new Date().toISOString()
         });
@@ -71,11 +81,12 @@ export default function Login() {
 
         <form onSubmit={handleLogin} style={{ width: '100%' }}>
           <FieldInput
-            icon="👤"
-            type="email"
-            placeholder="E-posta"
-            value={loginData.email}
-            onChange={(e) => setLoginData({ ...loginData, email: e.target.value })}
+            icon="🔑"
+            type="text"
+            placeholder="Katılımcı Kodu"
+            value={loginData.code}
+            onChange={(e) => setLoginData({ ...loginData, code: e.target.value })}
+            autoCapitalize="characters"
             required
           />
           <FieldInput
@@ -96,14 +107,7 @@ export default function Login() {
           </PrimaryButton>
         </form>
 
-        <div style={{ width: '100%', textAlign: 'center', fontFamily: font.body, fontSize: '13px', color: colors.textMuted, marginTop: '20px' }}>
-          Hesabın yok mu?{' '}
-          <span onClick={() => navigate('/register')} style={{ color: colors.coral, fontWeight: 700, cursor: 'pointer' }}>
-            Kayıt Ol
-          </span>
-        </div>
-
-        <div style={{ width: '100%', textAlign: 'center', marginTop: '18px' }}>
+        <div style={{ width: '100%', textAlign: 'center', marginTop: '20px' }}>
           <p style={{ fontFamily: font.body, fontSize: '12px', color: colors.textMuted, margin: '0 0 4px 0' }}>
             Giriş yapmakta sorun mu yaşıyorsunuz?
           </p>

@@ -197,7 +197,7 @@ export function ProgressBar({ value, total }) {
 // Onboarding tarzı üstte noktalı adım göstergesi (1/4, 2/4 ...)
 export function StepDots({ step, total }) {
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%', marginBottom: '26px' }}>
+    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%', marginBottom: '16px' }}>
       {Array.from({ length: total }).map((_, i) => {
         const idx = i + 1;
         const done = idx < step;

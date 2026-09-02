@@ -1,13 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { db, auth } from '../firebase';
-import { collection, getDocs, doc, updateDoc } from 'firebase/firestore';
+import { doc, updateDoc } from 'firebase/firestore';
+import { fetchQuestionsByForm } from '../utils/questions';
 import { PhoneShell, Screen } from '../components/PhoneShell';
-import { TopBar, ProgressBar, Badge, OptionButton, PrimaryButton, SecondaryButton, Card, InlineNote } from '../components/ui';
+import { TopBar, ProgressBar, Badge, OptionButton, PrimaryButton, Card, InlineNote } from '../components/ui';
 import { colors, font } from '../theme';
 import { userKey } from '../utils/session';
 
 const LETTERS = ['A', 'B', 'C', 'D'];
+
+// Tez önerisi: "her bir sorunun yanıtlanması için verilecek süre, alan uzmanlarının
+// görüşleri ve ön uygulama sonuçları doğrultusunda belirlenecektir" — kesin değer
+// henüz netleşmedi, bu yüzden 60 saniye geçici (placeholder) olarak kullanılıyor.
+const SECONDS_PER_QUESTION = 60;
 
 export default function FinalTest() {
   const [questions, setQuestions] = useState([]);
@@ -16,6 +22,7 @@ export default function FinalTest() {
   const [answers, setAnswers] = useState({});
   const [showError, setShowError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [timeLeft, setTimeLeft] = useState(SECONDS_PER_QUESTION);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -27,9 +34,9 @@ export default function FinalTest() {
     const fetchQuestions = async () => {
       setIsLoading(true);
       try {
-        // Son test, ön testle aynı soru havuzunu (aynı arayüz ve ilerleme yapısında) kullanır.
-        const querySnapshot = await getDocs(collection(db, "questions"));
-        setQuestions(querySnapshot.docs.map((d) => ({ id: d.id, ...d.data() })));
+        // Son test, ön testle aynı arayüz/ilerleme yapısını kullanır ama ayrı bir soru
+        // formudur (tez önerisi: Bilgi Testi A = ön test, Bilgi Testi B = son test).
+        setQuestions(await fetchQuestionsByForm('B'));
       } catch (e) {
         console.error("Soru çekme hatası:", e);
       } finally {
@@ -91,23 +98,41 @@ export default function FinalTest() {
     setShowError(false);
   };
 
-  const handleNext = async () => {
-    if (answers[currentQuestionIndex] === undefined) {
-      setShowError(true);
-      return;
-    }
+  // Cevaplanmış olsun olmasın bir sonraki soruya geçer (süre dolduğunda da kullanılır).
+  const goToNextQuestion = async () => {
+    setShowError(false);
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex((p) => p + 1);
-      setShowError(false);
     } else {
       await finishTest();
     }
   };
 
-  const handlePrev = () => {
-    setShowError(false);
-    if (currentQuestionIndex > 0) setCurrentQuestionIndex((p) => p - 1);
+  const handleNext = () => {
+    if (answers[currentQuestionIndex] === undefined) {
+      setShowError(true);
+      return;
+    }
+    goToNextQuestion();
   };
+
+  // Her soru için geri sayım: süre netleşince yenilenir, süre dolunca otomatik
+  // olarak (cevap verilmemiş olsa bile) bir sonraki soruya geçilir.
+  useEffect(() => {
+    if (phase !== 'test') return;
+    setTimeLeft(SECONDS_PER_QUESTION);
+  }, [currentQuestionIndex, phase]);
+
+  useEffect(() => {
+    if (phase !== 'test') return;
+    if (timeLeft <= 0) {
+      goToNextQuestion();
+      return;
+    }
+    const timer = setTimeout(() => setTimeLeft((t) => t - 1), 1000);
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [timeLeft, phase]);
 
   if (isLoading) {
     return (
@@ -187,8 +212,9 @@ export default function FinalTest() {
 
         {questions && questions.length > 0 ? (
           <>
-            <div style={{ width: '100%', display: 'flex', justifyContent: 'center', marginBottom: '10px' }}>
+            <div style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
               <Badge tone="coral">Soru {currentQuestionIndex + 1}/{questions.length}</Badge>
+              <Badge tone={timeLeft <= 10 ? 'coral' : 'teal'}>⏱ 0:{String(timeLeft).padStart(2, '0')}</Badge>
             </div>
             <ProgressBar value={currentQuestionIndex + 1} total={questions.length} />
 
@@ -215,10 +241,7 @@ export default function FinalTest() {
 
             <div style={{ flex: 1 }} />
 
-            <div style={{ display: 'flex', gap: '12px', width: '100%', marginTop: '18px' }}>
-              <SecondaryButton onClick={handlePrev} style={{ opacity: currentQuestionIndex === 0 ? 0.5 : 1 }} disabled={currentQuestionIndex === 0}>
-                Önceki Soru
-              </SecondaryButton>
+            <div style={{ width: '100%', marginTop: '18px' }}>
               <PrimaryButton onClick={handleNext} icon={false}>
                 {currentQuestionIndex === questions.length - 1 ? 'Son Testi Tamamla' : 'Sonraki Soru'}
               </PrimaryButton>

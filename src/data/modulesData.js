@@ -5,6 +5,8 @@
 // fizik muayenesi sırasına göre taslak olarak eklendi, gerçek liste netleşince güncellenebilir.
 
 import { userKey } from '../utils/session';
+import { auth, db } from '../firebase';
+import { doc, setDoc } from 'firebase/firestore';
 
 export const MODULES = [
   {
@@ -30,15 +32,22 @@ export const MODULES = [
     icon: '👶',
     type: 'body',
     description: 'Yenidoğanın fizik muayenesini vücut bölgelerine göre sistematik biçimde inceleyin.',
+    // Bölge listesi tez önerisi 7. Aşama'daki sırayla birebir uyumlu:
+    // baş, boyun, göz, kulak, burun, ağız ve oral kavite, göğüs, abdomen,
+    // umbilikal kord, genital sistem, ekstremiteler, deri.
     topics: [
-      { id: 'bas', title: 'Baş Muayenesi', point: { top: '14%', left: '50%' } },
-      { id: 'yuz', title: 'Yüz Muayenesi', point: { top: '22%', left: '62%' } },
-      { id: 'boyun', title: 'Boyun Muayenesi', point: { top: '30%', left: '38%' } },
-      { id: 'gogus', title: 'Göğüs Muayenesi', point: { top: '42%', left: '50%' } },
-      { id: 'karin', title: 'Karın Muayenesi', point: { top: '54%', left: '50%' } },
-      { id: 'genital', title: 'Genital Bölge Muayenesi', point: { top: '64%', left: '50%' } },
+      { id: 'bas', title: 'Baş Muayenesi', point: { top: '10%', left: '50%' } },
+      { id: 'goz', title: 'Göz Muayenesi', point: { top: '14%', left: '42%' } },
+      { id: 'kulak', title: 'Kulak Muayenesi', point: { top: '15%', left: '66%' } },
+      { id: 'burun', title: 'Burun Muayenesi', point: { top: '18%', left: '50%' } },
+      { id: 'agiz', title: 'Ağız ve Oral Kavite Muayenesi', point: { top: '21%', left: '58%' } },
+      { id: 'boyun', title: 'Boyun Muayenesi', point: { top: '27%', left: '38%' } },
+      { id: 'gogus', title: 'Göğüs Muayenesi', point: { top: '38%', left: '50%' } },
+      { id: 'abdomen', title: 'Abdomen (Karın) Muayenesi', point: { top: '48%', left: '50%' } },
+      { id: 'umbilikal-kord', title: 'Umbilikal Kord Muayenesi', point: { top: '52%', left: '58%' } },
+      { id: 'genital', title: 'Genital Bölge Muayenesi', point: { top: '62%', left: '50%' } },
       { id: 'ekstremite', title: 'Ekstremite Muayenesi', point: { top: '70%', left: '25%' } },
-      { id: 'sirt', title: 'Sırt ve Omurga Muayenesi', point: { top: '46%', left: '80%' } },
+      { id: 'deri', title: 'Deri Muayenesi', point: { top: '40%', left: '80%' } },
     ],
   },
   {
@@ -85,6 +94,27 @@ export function loadProgress() {
 
 export function saveProgress(progress) {
   localStorage.setItem(userKey(KEY), JSON.stringify(progress));
+  syncProgressToFirestore(progress);
+}
+
+// Yönetici paneli katılımcı ilerlemesini Firestore'dan okuyabilsin diye,
+// yerel kayıtla birlikte kullanıcının kendi belgesine de yazılır (arka planda,
+// arayüzü bekletmeden).
+function syncProgressToFirestore(progress) {
+  const user = auth.currentUser;
+  if (!user) return;
+  const total = MODULES.reduce((sum, m) => {
+    const modProgress = progress[m.id] || {};
+    const modTotal = m.topics.reduce((s, t) => s + (modProgress[t.id] || 0), 0);
+    return sum + Math.round(modTotal / m.topics.length);
+  }, 0);
+  const overallModulePercent = Math.round(total / MODULES.length);
+
+  setDoc(
+    doc(db, 'users', user.uid),
+    { moduleProgress: progress, overallModulePercent, moduleProgressUpdatedAt: new Date().toISOString() },
+    { merge: true }
+  ).catch((e) => console.error("İlerleme Firestore'a yazılamadı:", e));
 }
 
 // Bir konunun ilerlemesini al: 0 | 50 | 100

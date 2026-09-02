@@ -114,9 +114,16 @@ export default function EducationModules() {
                         {MODULES[i - 1]?.shortTitle} modülü tamamlandığında açılacaktır.
                       </p>
                     </>
+                  ) : complete ? (
+                    // Tez önerisi 8. Aşama: ilk kullanımda tamamlanmış bir modüle geri dönüş
+                    // yok — tüm modüller ve son değerlendirme bitene kadar (10. Aşama) sadece
+                    // aktif olan bölgeye erişilebilir.
+                    <p style={{ fontFamily: font.body, fontSize: '11px', color: colors.textFaint, margin: 0 }}>
+                      Bu modül tamamlandı. Tüm eğitim ve son değerlendirme bitince yeniden incelenebilecek.
+                    </p>
                   ) : (
                     <PrimaryButton onClick={() => goToModule(mod, locked)} icon={false}>
-                      {complete ? 'Modülü İncele' : percent > 0 ? 'Modüle Devam Et' : 'Modüle Başla'}
+                      {percent > 0 ? 'Modüle Devam Et' : 'Modüle Başla'}
                     </PrimaryButton>
                   )}
                 </div>

@@ -4,8 +4,10 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import FinalTest from './pages/FinalTest';
 import Home from './pages/Home';
 import Login from './pages/Login';
-import Register from './pages/Register';
+import AdminPanel from './pages/AdminPanel';
+import AdminRoute from './pages/AdminRoute';
 import InfoForm from './pages/InfoForm';
+import PreEfficacyScale from './pages/PreEfficacyScale';
 import PreTest from './pages/PreTest';
 import Results from './pages/Results';
 import WrongAnswers from './pages/WrongAnswers';
@@ -26,10 +28,11 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/onboarding" element={<ProtectedRoute><OnboardingFlow /></ProtectedRoute>} />
-        <Route path="/register" element={<Register />} />
+        <Route path="/admin" element={<ProtectedRoute><AdminRoute><AdminPanel /></AdminRoute></ProtectedRoute>} />
 
         {/* Giriş yapılması gereken korumalı sayfalar */}
         <Route path="/info-form" element={<ProtectedRoute><InfoForm /></ProtectedRoute>} />
+        <Route path="/pre-efficacy-scale" element={<ProtectedRoute><PreEfficacyScale /></ProtectedRoute>} />
         <Route path="/pre-test" element={<ProtectedRoute><PreTest /></ProtectedRoute>} />
         <Route path="/results" element={<ProtectedRoute><Results /></ProtectedRoute>} />
         <Route path="/wrong-answers" element={<ProtectedRoute><WrongAnswers /></ProtectedRoute>} />

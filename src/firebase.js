@@ -16,3 +16,13 @@ const app = initializeApp(firebaseConfig);
 
 export const db = getFirestore(app); // Veritabanı işlemleri için
 export const auth = getAuth(app);     // Giriş işlemleri için
+
+// İkinci bir Firebase app örneği: yönetici panelinden yeni katılımcı hesabı
+// oluştururken kullanılır. createUserWithEmailAndPassword normalde çağıran
+// oturumu yeni kullanıcıya çevirir; ayrı bir app örneğinde çalıştırıp hemen
+// oradan çıkış yaparak yöneticinin kendi oturumunun bozulmaması sağlanır.
+const adminCreationApp = initializeApp(firebaseConfig, "adminCreationApp");
+export const authForAdminCreation = getAuth(adminCreationApp);
+// Yeni katılımcının kendi belgesini kendi kimliğiyle (admin'in değil) yazabilmesi için
+// bu app örneğine bağlı ayrı bir Firestore bağlantısı.
+export const dbForAdminCreation = getFirestore(adminCreationApp);
