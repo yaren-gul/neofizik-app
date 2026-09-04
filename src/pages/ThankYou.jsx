@@ -1,15 +1,54 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import emailjs from '@emailjs/browser';
 import { db, auth } from '../firebase';
-import { doc, updateDoc } from 'firebase/firestore';
+import { doc, updateDoc, getDoc } from 'firebase/firestore';
 import { PhoneShell, Screen } from '../components/PhoneShell';
-import { PrimaryButton, SecondaryButton } from '../components/ui';
+import { PrimaryButton, SecondaryButton, FieldInput, InlineNote } from '../components/ui';
 import { colors, radius, font } from '../theme';
+
+// EmailJS: Firebase Cloud Functions (ücretli plan) gerektirmeden, tarayıcıdan
+// doğrudan e-posta gönderebilmek için kullanılıyor. Kullanılabilmesi için
+// emailjs.com'da ücretsiz bir hesap + servis + şablon oluşturulup buradaki
+// üç değerin girilmesi gerekiyor.
+const EMAILJS_SERVICE_ID = 'YOUR_EMAILJS_SERVICE_ID';
+const EMAILJS_TEMPLATE_ID = 'YOUR_EMAILJS_TEMPLATE_ID';
+const EMAILJS_PUBLIC_KEY = 'YOUR_EMAILJS_PUBLIC_KEY';
 
 export default function ThankYou() {
   const navigate = useNavigate();
   const [feedback, setFeedback] = useState('');
   const [saving, setSaving] = useState(false);
+  const [email, setEmail] = useState('');
+  const [emailStatus, setEmailStatus] = useState('idle'); // idle | sending | sent | error
+
+  const handleSendCertificateEmail = async () => {
+    if (!email.trim()) return;
+    setEmailStatus('sending');
+    try {
+      let participantCode = '';
+      if (auth.currentUser) {
+        const snap = await getDoc(doc(db, 'users', auth.currentUser.uid));
+        participantCode = snap.exists() ? snap.data().participantCode || '' : '';
+      }
+      await emailjs.send(
+        EMAILJS_SERVICE_ID,
+        EMAILJS_TEMPLATE_ID,
+        { to_email: email.trim(), participant_code: participantCode },
+        { publicKey: EMAILJS_PUBLIC_KEY }
+      );
+      if (auth.currentUser) {
+        await updateDoc(doc(db, 'users', auth.currentUser.uid), {
+          certificateEmail: email.trim(),
+          certificateEmailSentAt: new Date().toISOString(),
+        });
+      }
+      setEmailStatus('sent');
+    } catch (e) {
+      console.error('Sertifika e-postası gönderilemedi:', e);
+      setEmailStatus('error');
+    }
+  };
 
   const handleFinish = async (goTo) => {
     setSaving(true);
@@ -67,14 +106,34 @@ export default function ThankYou() {
           <p style={{ fontFamily: font.body, fontSize: '10.5px', color: colors.textFaint, textAlign: 'right', margin: '4px 0 0 0' }}>{feedback.length}/500</p>
         </div>
 
-        <div style={{ width: '100%', display: 'flex', alignItems: 'center', gap: '10px', backgroundColor: colors.card, border: `1px solid ${colors.tealBorder}`, borderRadius: radius.md, padding: '14px 16px', marginBottom: '20px' }}>
-          <span style={{ fontSize: '24px' }}>🎖️</span>
-          <div>
-            <p style={{ fontFamily: font.heading, fontSize: '13px', fontWeight: 700, color: colors.tealDark, margin: '0 0 3px 0' }}>Katılım Belgeniz Hazır</p>
-            <p style={{ fontFamily: font.body, fontSize: '11px', color: colors.textMuted, margin: 0, lineHeight: 1.5 }}>
-              Eğitim ve değerlendirme süreçlerini tamamladığınız için katılım belgesi almaya hak kazandınız.
-            </p>
+        <div style={{ width: '100%', backgroundColor: colors.card, border: `1px solid ${colors.tealBorder}`, borderRadius: radius.md, padding: '14px 16px', marginBottom: '12px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: emailStatus === 'sent' ? 0 : '12px' }}>
+            <span style={{ fontSize: '24px' }}>🎖️</span>
+            <div>
+              <p style={{ fontFamily: font.heading, fontSize: '13px', fontWeight: 700, color: colors.tealDark, margin: '0 0 3px 0' }}>Katılım Belgeniz Hazır</p>
+              <p style={{ fontFamily: font.body, fontSize: '11px', color: colors.textMuted, margin: 0, lineHeight: 1.5 }}>
+                Eğitim ve değerlendirme süreçlerini tamamladığınız için katılım belgesi almaya hak kazandınız.
+              </p>
+            </div>
           </div>
+
+          {emailStatus === 'sent' ? (
+            <InlineNote>Belge {email} adresine gönderildi.</InlineNote>
+          ) : (
+            <>
+              <FieldInput
+                icon="✉️"
+                type="email"
+                placeholder="E-posta adresiniz"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+              <SecondaryButton onClick={handleSendCertificateEmail} disabled={!email.trim() || emailStatus === 'sending'}>
+                {emailStatus === 'sending' ? 'Gönderiliyor...' : 'Belgeyi E-postama Gönder'}
+              </SecondaryButton>
+              {emailStatus === 'error' && <InlineNote tone="error">Gönderilemedi, lütfen tekrar deneyin.</InlineNote>}
+            </>
+          )}
         </div>
 
         <div style={{ flex: 1 }} />

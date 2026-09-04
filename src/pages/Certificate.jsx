@@ -9,20 +9,20 @@ import { colors, radius, font } from '../theme';
 
 function Certificate() {
   const navigate = useNavigate();
-  const [name, setName] = useState('Katılımcı');
+  const [code, setCode] = useState('—');
 
   useEffect(() => {
-    const fetchName = async () => {
+    const fetchCode = async () => {
       try {
         if (auth.currentUser) {
           const snap = await getDoc(doc(db, 'users', auth.currentUser.uid));
-          if (snap.exists() && snap.data().name) setName(snap.data().name);
+          if (snap.exists() && snap.data().participantCode) setCode(snap.data().participantCode);
         }
       } catch (e) {
-        console.error('Kullanıcı adı alınamadı:', e);
+        console.error('Katılımcı kodu alınamadı:', e);
       }
     };
-    fetchName();
+    fetchCode();
   }, []);
 
   const today = new Date().toLocaleDateString('tr-TR');
@@ -56,8 +56,8 @@ function Certificate() {
             NEOFİZİK<br />KATILIM BELGESİ
           </h2>
 
-          <p style={{ fontFamily: font.body, fontSize: '11.5px', color: colors.textMuted, margin: '0 0 2px 0' }}>Katılımcı Adı Soyadı</p>
-          <p style={{ fontFamily: font.heading, fontSize: '15px', fontWeight: 700, color: colors.coral, margin: '0 0 14px 0' }}>{name}</p>
+          <p style={{ fontFamily: font.body, fontSize: '11.5px', color: colors.textMuted, margin: '0 0 2px 0' }}>Katılımcı Kodu</p>
+          <p style={{ fontFamily: font.heading, fontSize: '15px', fontWeight: 700, color: colors.coral, margin: '0 0 14px 0', letterSpacing: '1px' }}>{code}</p>
 
           <p style={{ fontFamily: font.body, fontSize: '11.5px', color: colors.text, lineHeight: 1.6, margin: '0 0 18px 0' }}>
             Yenidoğan Fizik Muayenesi Eğitim Uygulaması kapsamındaki eğitim ve değerlendirme süreçlerini tamamlamıştır.

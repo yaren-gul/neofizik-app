@@ -6,7 +6,7 @@
 
 import { userKey } from '../utils/session';
 import { auth, db } from '../firebase';
-import { doc, setDoc } from 'firebase/firestore';
+import { doc, setDoc, arrayUnion } from 'firebase/firestore';
 
 export const MODULES = [
   {
@@ -126,8 +126,25 @@ export function getTopicProgress(moduleId, topicId) {
 export function setTopicProgress(moduleId, topicId, value) {
   const p = loadProgress();
   if (!p[moduleId]) p[moduleId] = {};
+  const previousValue = p[moduleId][topicId] || 0;
   p[moduleId][topicId] = value;
   saveProgress(p);
+  if (value !== previousValue) {
+    logTopicCompletion(moduleId, topicId, value);
+  }
+}
+
+// Bir bölgenin ilerlemesi her değiştiğinde zaman damgalı bir kayıt tutar.
+// Tez önerisindeki "bölge başına 1 gün" çıkarılma kriterini araştırmacının
+// sonradan (admin panelinden) değerlendirebilmesi için gereklidir.
+function logTopicCompletion(moduleId, topicId, value) {
+  const user = auth.currentUser;
+  if (!user) return;
+  setDoc(
+    doc(db, 'users', user.uid),
+    { topicCompletionLog: arrayUnion({ moduleId, topicId, value, at: new Date().toISOString() }) },
+    { merge: true }
+  ).catch((e) => console.error('Tamamlanma kaydı yazılamadı:', e));
 }
 
 // Modülün genel yüzdesi (tüm konuların ortalaması)
