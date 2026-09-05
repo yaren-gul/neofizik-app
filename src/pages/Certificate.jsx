@@ -92,8 +92,9 @@ function Certificate() {
         <div style={{ height: '10px' }} />
         <SecondaryButton onClick={() => navigate('/')}>Ana Sayfaya Dön</SecondaryButton>
 
-        <p style={{ fontFamily: font.body, fontSize: '10.5px', color: colors.textFaint, textAlign: 'center', marginTop: '10px' }}>
-          Belge katılımcı adına düzenlenmiştir.
+        <p style={{ fontFamily: font.body, fontSize: '10.5px', color: colors.textFaint, textAlign: 'center', marginTop: '10px', lineHeight: 1.6 }}>
+          Bu belge, araştırmaya katılımı gösteren bir belge niteliğindedir; mesleki yeterlik, akademik başarı veya
+          sertifikalı bir eğitim programının tamamlandığını gösteren resmî bir yeterlik belgesi olarak kullanılamaz.
         </p>
       </Screen>
     </PhoneShell>

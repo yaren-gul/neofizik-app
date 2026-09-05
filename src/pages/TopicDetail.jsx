@@ -6,9 +6,9 @@ import ProgressRing from '../components/ProgressRing';
 import { getModule, getTopic, getTopicProgress, setTopicProgress } from '../data/modulesData';
 import { colors, radius, font } from '../theme';
 
-// Gerçek bilgi kartı içerikleri (bölge açıklaması, normal/anormal bulgular vb.) henüz netleşmedi.
-// Aşağıdaki kartlar akışı doğru şekilde göstermek için taslak/placeholder içeriktir.
-const CARD_TEMPLATE = [
+// Bir konunun (topic) modulesData.js'te kendi `cards` alanı yoksa bu genel
+// yer tutucu kartlar gösterilir — gerçek içerik eklendiğinde otomatik devre dışı kalır.
+const DEFAULT_CARDS = [
   { title: 'Bölge Açıklaması', icon: '📍', text: 'Bu bölümde ilgili muayene bölgesinin anatomik sınırları ve önemi açıklanacaktır.' },
   { title: 'Muayene Basamakları', icon: '📋', text: 'Muayenenin hangi sırayla ve nasıl yapılması gerektiği adım adım anlatılacaktır.' },
   { title: 'Normal Bulgular', icon: '💚', text: 'İlgili muayene bölgesinde beklenen normal bulgular açıklanacaktır.' },
@@ -24,6 +24,9 @@ export default function TopicDetail() {
   const [phase, setPhase] = useState('entry');
   const [cardIndex, setCardIndex] = useState(0);
   const [progress, setProgress] = useState(0);
+
+  const cards = topic?.cards && topic.cards.length > 0 ? topic.cards : DEFAULT_CARDS;
+  const video = topic?.video || null;
 
   // React Router, sadece URL parametresi (topicId) değiştiğinde bileşeni yeniden mount ETMEZ.
   // Bu yüzden "Sonraki Bölüme Geç" ile başka bir konuya geçildiğinde state'i burada elle sıfırlıyoruz,
@@ -60,13 +63,13 @@ export default function TopicDetail() {
 
   /* ---------- Bilgi kartları alt-akışı ---------- */
   if (phase === 'cards') {
-    const card = CARD_TEMPLATE[cardIndex];
-    const isLast = cardIndex === CARD_TEMPLATE.length - 1;
+    const card = cards[cardIndex];
+    const isLast = cardIndex === cards.length - 1;
     return (
       <PhoneShell>
         <Screen align="center">
           <TopBar back={() => setPhase('entry')} />
-          <div style={{ marginBottom: '14px' }}><Badge>Bilgi Kartı {cardIndex + 1}/{CARD_TEMPLATE.length}</Badge></div>
+          <div style={{ marginBottom: '14px' }}><Badge>Bilgi Kartı {cardIndex + 1}/{cards.length}</Badge></div>
           <h1 style={{ fontFamily: font.heading, fontSize: '19px', fontWeight: 700, color: colors.tealDark, margin: '0 0 18px 0', textAlign: 'center' }}>
             {topic.title}
           </h1>
@@ -106,12 +109,21 @@ export default function TopicDetail() {
           </h1>
           <p style={{ fontFamily: font.body, fontSize: '12.5px', color: colors.textMuted, margin: '0 0 18px 0' }}>Uygulama Videosu</p>
 
-          <div style={{ width: '100%', aspectRatio: '16/10', backgroundColor: '#0E4550', borderRadius: radius.md, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '18px' }}>
-            <span style={{ fontSize: '40px', color: '#fff' }}>▶</span>
-          </div>
+          {video?.url ? (
+            <video
+              src={video.url}
+              controls
+              controlsList="nodownload"
+              style={{ width: '100%', aspectRatio: '16/10', borderRadius: radius.md, marginBottom: '18px', backgroundColor: '#000' }}
+            />
+          ) : (
+            <div style={{ width: '100%', aspectRatio: '16/10', backgroundColor: '#0E4550', borderRadius: radius.md, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '18px' }}>
+              <span style={{ fontSize: '40px', color: '#fff' }}>▶</span>
+            </div>
+          )}
 
           <p style={{ fontFamily: font.body, fontSize: '13px', color: colors.text, textAlign: 'center', lineHeight: 1.6, margin: '0 0 6px 0' }}>
-            {topic.title.replace(' Muayenesi', '')} muayenesinin uygulanışını dikkatlice izleyiniz.
+            {video?.description || `${topic.title.replace(' Muayenesi', '')} muayenesinin uygulanışını dikkatlice izleyiniz.`}
           </p>
 
           <div style={{ flex: 1 }} />

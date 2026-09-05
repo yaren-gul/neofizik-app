@@ -8,6 +8,15 @@ import { userKey } from '../utils/session';
 import { auth, db } from '../firebase';
 import { doc, setDoc, arrayUnion } from 'firebase/firestore';
 
+// Gerçek bilgi kartı / video içeriği geldiğinde bir konuya (topic) eklenecek
+// alanlar (opsiyonel — eklenmezse TopicDetail.jsx genel bir yer tutucu gösterir):
+//   cards: [{ title, icon, text }, ...]   — "Bilgi Kartları" adımındaki kartlar
+//   video: { url, description }          — "Uygulama Videosu" adımı (url: mp4 linki)
+// Örnek:
+//   { id: 'bas', title: 'Baş Muayenesi', point: {...},
+//     cards: [{ title: 'Bölge Açıklaması', icon: '📍', text: '...gerçek metin...' }],
+//     video: { url: 'https://.../bas-muayenesi.mp4', description: '...' } }
+
 export const MODULES = [
   {
     id: 'vital',
