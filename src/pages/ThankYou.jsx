@@ -8,12 +8,10 @@ import { PrimaryButton, SecondaryButton, FieldInput, InlineNote } from '../compo
 import { colors, radius, font } from '../theme';
 
 // EmailJS: Firebase Cloud Functions (ücretli plan) gerektirmeden, tarayıcıdan
-// doğrudan e-posta gönderebilmek için kullanılıyor. Kullanılabilmesi için
-// emailjs.com'da ücretsiz bir hesap + servis + şablon oluşturulup buradaki
-// üç değerin girilmesi gerekiyor.
-const EMAILJS_SERVICE_ID = 'YOUR_EMAILJS_SERVICE_ID';
-const EMAILJS_TEMPLATE_ID = 'YOUR_EMAILJS_TEMPLATE_ID';
-const EMAILJS_PUBLIC_KEY = 'YOUR_EMAILJS_PUBLIC_KEY';
+// doğrudan e-posta gönderebilmek için kullanılıyor.
+const EMAILJS_SERVICE_ID = 'service_7m9u6al';
+const EMAILJS_TEMPLATE_ID = 'template_5e4hfhh';
+const EMAILJS_PUBLIC_KEY = 'L8RuXSa8L50bZCr47';
 
 export default function ThankYou() {
   const navigate = useNavigate();
