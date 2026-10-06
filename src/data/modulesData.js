@@ -44,19 +44,21 @@ export const MODULES = [
     // Bölge listesi tez önerisi 7. Aşama'daki sırayla birebir uyumlu:
     // baş, boyun, göz, kulak, burun, ağız ve oral kavite, göğüs, abdomen,
     // umbilikal kord, genital sistem, ekstremiteler, deri.
+    // anchor/normal: public/models/baby.glb üzerindeki 3D konum ve yüzey yönü (Baby3D).
+    // point: eski 2D konum.
     topics: [
-      { id: 'bas', title: 'Baş Muayenesi', point: { top: '10%', left: '50%' } },
-      { id: 'goz', title: 'Göz Muayenesi', point: { top: '14%', left: '42%' } },
-      { id: 'kulak', title: 'Kulak Muayenesi', point: { top: '15%', left: '66%' } },
-      { id: 'burun', title: 'Burun Muayenesi', point: { top: '18%', left: '50%' } },
-      { id: 'agiz', title: 'Ağız ve Oral Kavite Muayenesi', point: { top: '21%', left: '58%' } },
-      { id: 'boyun', title: 'Boyun Muayenesi', point: { top: '27%', left: '38%' } },
-      { id: 'gogus', title: 'Göğüs Muayenesi', point: { top: '38%', left: '50%' } },
-      { id: 'abdomen', title: 'Abdomen (Karın) Muayenesi', point: { top: '48%', left: '50%' } },
-      { id: 'umbilikal-kord', title: 'Umbilikal Kord Muayenesi', point: { top: '52%', left: '58%' } },
-      { id: 'genital', title: 'Genital Bölge Muayenesi', point: { top: '62%', left: '50%' } },
-      { id: 'ekstremite', title: 'Ekstremite Muayenesi', point: { top: '70%', left: '25%' } },
-      { id: 'deri', title: 'Deri Muayenesi', point: { top: '40%', left: '80%' } },
+      { id: 'bas', title: 'Baş Muayenesi', point: { top: '10%', left: '50%' }, anchor: [0.29, 1.64, 0.27], normal: [-0.07, 0.51, 0.86] },
+      { id: 'goz', title: 'Göz Muayenesi', point: { top: '14%', left: '42%' }, anchor: [0.05, 0.95, 0.3], normal: [-0.46, -0.73, 0.51] },
+      { id: 'kulak', title: 'Kulak Muayenesi', point: { top: '15%', left: '66%' }, anchor: [-0.37, 1.3, -0.41], normal: [-0.75, 0.32, 0.58] },
+      { id: 'burun', title: 'Burun Muayenesi', point: { top: '18%', left: '50%' }, anchor: [0.26, 0.75, 0.38], normal: [-0.45, 0.24, 0.86] },
+      { id: 'agiz', title: 'Ağız ve Oral Kavite Muayenesi', point: { top: '21%', left: '58%' }, anchor: [0.24, 0.54, 0.29], normal: [0.28, -0.3, 0.91] },
+      { id: 'boyun', title: 'Boyun Muayenesi', point: { top: '27%', left: '38%' }, anchor: [0.43, 0.25, -0.36], normal: [0.52, 0.23, 0.82] },
+      { id: 'gogus', title: 'Göğüs Muayenesi', point: { top: '38%', left: '50%' }, anchor: [-0.57, 0.1, 0.29], normal: [-0.63, 0.28, 0.73] },
+      { id: 'abdomen', title: 'Abdomen (Karın) Muayenesi', point: { top: '48%', left: '50%' }, anchor: [-0.46, -0.33, -0.05], normal: [-0.44, 0.16, 0.88] },
+      { id: 'umbilikal-kord', title: 'Umbilikal Kord Muayenesi', point: { top: '52%', left: '58%' }, anchor: [0.22, -0.55, -0.01], normal: [0.49, 0.2, 0.85] },
+      { id: 'genital', title: 'Genital Bölge Muayenesi', point: { top: '62%', left: '50%' }, anchor: [0.52, -0.67, 0.65], normal: [-0.13, 0.95, 0.3] },
+      { id: 'ekstremite', title: 'Ekstremite Muayenesi', point: { top: '70%', left: '25%' }, anchor: [-0.88, -0.81, 0.78], normal: [-0.53, 0.05, 0.84] },
+      { id: 'deri', title: 'Deri Muayenesi', point: { top: '40%', left: '80%' }, anchor: [-0.97, -0.05, -0.05], normal: [-0.81, 0.15, 0.57] },
     ],
   },
   {

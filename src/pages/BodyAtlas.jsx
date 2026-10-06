@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { PhoneShell, Screen } from '../components/PhoneShell';
 import { TopBar, PrimaryButton, Card } from '../components/ui';
 import ProgressRing from '../components/ProgressRing';
-import BabyOrbit from '../components/BabyOrbit';
+import Baby3D from '../components/Baby3D';
 import { getModule, getModulePercent, getTopicProgress, isTopicLocked } from '../data/modulesData';
 import { colors, font } from '../theme';
 
@@ -12,6 +12,7 @@ export default function BodyAtlas() {
   const navigate = useNavigate();
   const mod = getModule(moduleId);
   const [activeTopicId, setActiveTopicId] = useState(null);
+  const [zoomed, setZoomed] = useState(false);
 
   if (!mod) return null;
 
@@ -36,30 +37,52 @@ export default function BodyAtlas() {
         </div>
 
         <div style={{ position: 'relative', width: '100%', flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '0 26px', boxSizing: 'border-box' }}>
-          <div style={{ position: 'relative' }}>
-            <BabyOrbit size={190} />
-            {mod.topics.map((topic) => {
-              const locked = isTopicLocked(mod.id, topic.id);
-              const complete = getTopicProgress(mod.id, topic.id) === 100;
-              const isActive = topic.id === activeTopic.id;
-              return (
-                <button
-                  key={topic.id}
-                  onClick={() => !locked && setActiveTopicId(topic.id)}
-                  style={{
-                    position: 'absolute', top: topic.point.top, left: topic.point.left, transform: 'translate(-50%,-50%)',
-                    width: '26px', height: '26px', borderRadius: '50%', border: '2px solid #fff',
-                    backgroundColor: complete ? colors.teal : isActive ? colors.coral : colors.card,
-                    color: complete || isActive ? '#fff' : colors.textFaint,
-                    display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px',
-                    cursor: locked ? 'default' : 'pointer',
-                    boxShadow: isActive ? '0 0 0 4px rgba(254,90,60,0.25)' : '0 2px 6px rgba(14,69,80,0.15)',
-                  }}
-                >
-                  {complete ? '✓' : locked ? '🔒' : ''}
-                </button>
-              );
-            })}
+          <div style={{ position: 'relative', width: '100%' }}>
+            <Baby3D
+              maxWidth={300}
+              height={300}
+              focusHead={zoomed}
+              points={mod.topics.map((t) => ({ id: t.id, anchor: t.anchor, normal: t.normal }))}
+              renderPoint={(id) => {
+                const topic = mod.topics.find((t) => t.id === id);
+                const locked = isTopicLocked(mod.id, topic.id);
+                const complete = getTopicProgress(mod.id, topic.id) === 100;
+                const isActive = topic.id === activeTopic.id;
+                return (
+                  <button
+                    onClick={() => !locked && setActiveTopicId(topic.id)}
+                    aria-label={topic.title}
+                    title={topic.title}
+                    style={{
+                      width: '22px', height: '22px', borderRadius: '50%', border: '2px solid #fff', padding: 0,
+                      backgroundColor: complete ? colors.teal : isActive ? colors.coral : colors.card,
+                      color: complete || isActive ? '#fff' : colors.textFaint,
+                      display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px',
+                      cursor: locked ? 'default' : 'pointer',
+                      boxShadow: isActive ? '0 0 0 4px rgba(254,90,60,0.25)' : '0 2px 6px rgba(14,69,80,0.2)',
+                    }}
+                  >
+                    {complete ? '✓' : locked ? '🔒' : ''}
+                  </button>
+                );
+              }}
+            />
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', flexWrap: 'wrap', marginTop: '4px' }}>
+              <span style={{ fontFamily: font.body, fontSize: '10.5px', color: colors.textFaint }}>↔ Döndürmek için sürükleyin</span>
+              <button
+                onClick={() => setZoomed((z) => !z)}
+                style={{
+                  border: `1px solid ${colors.tealBorder}`, borderRadius: '999px', backgroundColor: colors.card, color: colors.teal,
+                  fontFamily: font.body, fontSize: '11px', fontWeight: 600, padding: '5px 10px', cursor: 'pointer',
+                }}
+              >
+                {zoomed ? '⤢ Tüm vücut' : '🔍 Yüze yakınlaş'}
+              </button>
+            </div>
+            {/* CC-BY 4.0 lisansı gereği model sahibinin adı belirtilmelidir (public/models/baby-LICENSE.txt) */}
+            <p style={{ fontFamily: font.body, fontSize: '9px', color: colors.textFaint, textAlign: 'center', margin: '6px 0 0 0' }}>
+              3D model: <a href="https://sketchfab.com/3d-models/sleeping-baby-f64d9f687a2e458883d72489adfa5fba" target="_blank" rel="noreferrer" style={{ color: colors.textFaint }}>"Sleeping Baby"</a> – Syral86, <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noreferrer" style={{ color: colors.textFaint }}>CC BY 4.0</a>
+            </p>
           </div>
 
           {activeTopic && (
