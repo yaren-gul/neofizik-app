@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Android APK ciktilari ve yerel yedekler
+*.apk
+model-kaynak/
+*.bak

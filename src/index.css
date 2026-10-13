@@ -30,3 +30,16 @@ input::placeholder {
   background: #BFE0DE;
   border-radius: 10px;
 }
+
+/* Baby3D yükleme göstergesi */
+.baby3d-spinner {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 3px solid #BFE0DE;
+  border-top-color: #0B6F74;
+  animation: baby3d-spin 0.8s linear infinite;
+}
+@keyframes baby3d-spin {
+  to { transform: rotate(360deg); }
+}

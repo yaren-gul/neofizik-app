@@ -1,6 +1,8 @@
 import OnboardingFlow from './pages/OnboardingFlow';
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { useEffect, useRef } from 'react';
+import { BrowserRouter as Router, Routes, Route, useLocation, useNavigate } from 'react-router-dom';
+import { App as CapApp } from '@capacitor/app';
+import { isNativeApp } from './utils/platform';
 import FinalTest from './pages/FinalTest';
 import Home from './pages/Home';
 import Login from './pages/Login';
@@ -20,9 +22,33 @@ import ThankYou from './pages/ThankYou';
 import Certificate from './pages/Certificate';
 import ProtectedRoute from './pages/ProtectedRoute'; // Korumalı rota bileşeni
 
+// Android geri tuşu: uygulama içinde bir önceki ekrana döner; açılış/giriş
+// ekranında ya da geri gidilecek ekran yoksa uygulamayı kapatır.
+function AndroidBackButton() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const pathRef = useRef(location.pathname);
+
+  useEffect(() => {
+    pathRef.current = location.pathname;
+  }, [location.pathname]);
+
+  useEffect(() => {
+    if (!isNativeApp) return undefined;
+    const listener = CapApp.addListener('backButton', ({ canGoBack }) => {
+      if (!canGoBack || ['/', '/login'].includes(pathRef.current)) CapApp.exitApp();
+      else navigate(-1);
+    });
+    return () => { listener.then((l) => l.remove()); };
+  }, [navigate]);
+
+  return null;
+}
+
 function App() {
   return (
     <Router>
+      <AndroidBackButton />
       <Routes>
         {/* Herkesin erişebileceği genel sayfalar */}
         <Route path="/" element={<Home />} />

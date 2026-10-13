@@ -107,7 +107,7 @@ export default function FinalReport() {
         <Medal score={score} />
 
         <p style={{ fontFamily: font.body, fontSize: '13px', color: colors.tealDark, fontWeight: 600, textAlign: 'center', margin: '8px 0 18px 0' }}>
-          NeoFizik Eğitimini Tamamladınız
+          NeonaFizik Eğitimini Tamamladınız
         </p>
 
         <div style={{ display: 'flex', gap: '10px', width: '100%', marginBottom: '8px' }}>

@@ -13,11 +13,12 @@ export function PrimaryButton({ children, disabled, style, icon = true, ...props
         backgroundColor: disabled ? colors.coralPale : colors.coral,
         color: '#fff',
         border: 'none',
-        padding: '16px 20px',
+        padding: '12px 16px',
         borderRadius: radius.pill,
         fontFamily: font.heading,
         fontWeight: 600,
-        fontSize: '15px',
+        fontSize: '14px',
+        lineHeight: 1.3,
         cursor: disabled ? 'not-allowed' : 'pointer',
         width: '100%',
         boxSizing: 'border-box',
@@ -46,11 +47,12 @@ export function SecondaryButton({ children, style, ...props }) {
         backgroundColor: 'transparent',
         color: colors.teal,
         border: `1.5px solid ${colors.teal}`,
-        padding: '15px 20px',
+        padding: '11px 16px',
         borderRadius: radius.pill,
         fontFamily: font.heading,
         fontWeight: 600,
-        fontSize: '15px',
+        fontSize: '14px',
+        lineHeight: 1.3,
         cursor: 'pointer',
         width: '100%',
         boxSizing: 'border-box',
@@ -227,6 +229,16 @@ export function StepDots({ step, total }) {
 
 /* ---------- Üst başlık (geri ok + logo + opsiyonel rozet) ---------- */
 
+// Çıkış (güç) ikonu. "⏻" karakteri bazı Android yazı tiplerinde olmadığı için kare görünüyordu.
+export function PowerIcon({ size = 16, color = 'currentColor' }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2.4" strokeLinecap="round" aria-hidden="true">
+      <path d="M12 3v8" />
+      <path d="M6.3 6.8a8 8 0 1 0 11.4 0" />
+    </svg>
+  );
+}
+
 export function TopBar({ back, badge, onLogout }) {
   const navigate = useNavigate();
   return (
@@ -249,9 +261,9 @@ export function TopBar({ back, badge, onLogout }) {
         <button
           onClick={onLogout}
           title="Çıkış Yap"
-          style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '16px', color: colors.textMuted }}
+          style={{ background: 'none', border: 'none', cursor: 'pointer', color: colors.textMuted, display: 'flex', padding: '4px' }}
         >
-          ⏻
+          <PowerIcon size={17} />
         </button>
       ) : (
         <span style={{ width: '20px' }} />

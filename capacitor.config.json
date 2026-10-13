@@ -1,0 +1,12 @@
+{
+  "appId": "com.neonafizik.app",
+  "appName": "NeonaFizik",
+  "webDir": "dist",
+  "plugins": {
+    "SystemBars": {
+      "insetsHandling": "css",
+      "style": "LIGHT",
+      "initialViewportFitValueHint": "cover"
+    }
+  }
+}

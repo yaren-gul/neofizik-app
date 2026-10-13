@@ -13,7 +13,7 @@ export default function Logo({ size = 24, withDot = true }) {
         alignItems: 'baseline',
       }}
     >
-      <span style={{ color: colors.teal }}>Neo</span>
+      <span style={{ color: colors.teal }}>Neona</span>
       <span style={{ color: colors.tealDark, fontWeight: 800, position: 'relative' }}>
         Fizik
         {withDot && (

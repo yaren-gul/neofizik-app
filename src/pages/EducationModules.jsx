@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { PhoneShell, Screen } from '../components/PhoneShell';
 import { TopBar, PrimaryButton, SecondaryButton, Badge, Card } from '../components/ui';
 import ProgressRing from '../components/ProgressRing';
+import { ModuleIcon } from '../components/BabyIcon';
 import { MODULES, getModulePercent, isModuleLocked, isModuleComplete, getOverallPercent, completedModuleCount } from '../data/modulesData';
 import { colors, radius, font } from '../theme';
 
@@ -60,7 +61,7 @@ export default function EducationModules() {
 
         <Card>
           <p style={{ fontFamily: font.body, fontSize: '12.5px', color: colors.text, lineHeight: 1.6, margin: 0 }}>
-            NeoFizik eğitimi üç modülden oluşmaktadır. Modüller belirlenen sırayla açılacaktır. Bir modülü %100
+            NeonaFizik eğitimi üç modülden oluşmaktadır. Modüller belirlenen sırayla açılacaktır. Bir modülü %100
             tamamladığınızda bir sonraki modüle geçebilirsiniz.
           </p>
         </Card>
@@ -93,7 +94,7 @@ export default function EducationModules() {
 
                 <div style={{ flex: 1, backgroundColor: colors.card, border: `1px solid ${colors.tealBorder}`, borderRadius: radius.md, padding: '16px', marginBottom: '16px', opacity: locked ? 0.7 : 1 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
-                    <span style={{ fontSize: '22px' }}>{mod.icon}</span>
+                    <ModuleIcon icon={mod.icon} size={30} />
                     {!locked && !complete && <Badge tone="coral">Aktif</Badge>}
                     {locked && <span style={{ fontSize: '16px' }}>🔒</span>}
                     {complete && <Badge>Tamamlandı</Badge>}

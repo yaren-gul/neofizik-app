@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Sadece geliştirme (debug) derlemeleri: canlı yenileme için USB üzerinden
+     bilgisayardaki sunucuya (localhost) şifresiz bağlantıya izin verir.
+     İnternetteki adresler için şifresiz bağlantı kapalı kalır. -->
+<network-security-config>
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="false">localhost</domain>
+        <domain includeSubdomains="false">127.0.0.1</domain>
+    </domain-config>
+</network-security-config>

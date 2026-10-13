@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { PhoneShell, Screen } from '../components/PhoneShell';
 import { TopBar, PrimaryButton, SecondaryButton, Badge, Card } from '../components/ui';
 import ProgressRing from '../components/ProgressRing';
+import { ModuleIcon } from '../components/BabyIcon';
 import { getModule, getTopic, getTopicProgress, setTopicProgress } from '../data/modulesData';
 import { colors, radius, font } from '../theme';
 
@@ -86,10 +87,10 @@ export default function TopicDetail() {
           <div style={{ flex: 1 }} />
 
           <div style={{ display: 'flex', gap: '12px', width: '100%' }}>
-            <SecondaryButton onClick={() => setCardIndex((i) => Math.max(0, i - 1))} style={{ opacity: cardIndex === 0 ? 0.5 : 1 }} disabled={cardIndex === 0}>
+            <SecondaryButton onClick={() => setCardIndex((i) => Math.max(0, i - 1))} style={{ opacity: cardIndex === 0 ? 0.5 : 1, flex: '0 0 36%' }} disabled={cardIndex === 0}>
               Önceki
             </SecondaryButton>
-            <PrimaryButton onClick={() => (isLast ? finishCards() : setCardIndex((i) => i + 1))} icon={false}>
+            <PrimaryButton onClick={() => (isLast ? finishCards() : setCardIndex((i) => i + 1))} icon={false} style={{ flex: 1 }}>
               {isLast ? 'Kartları Tamamla' : 'Sonraki'}
             </PrimaryButton>
           </div>
@@ -181,7 +182,7 @@ export default function TopicDetail() {
         </h1>
 
         <div style={{ width: '110px', height: '110px', borderRadius: '50%', backgroundColor: colors.tealSoft, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '44px', marginBottom: '18px' }}>
-          {topic.icon || '👶'}
+          <ModuleIcon icon={topic.icon || '👶'} size={60} />
         </div>
 
         <div style={{ marginBottom: '20px' }}>

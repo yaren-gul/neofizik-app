@@ -19,6 +19,10 @@ export default function BodyAtlas() {
   const percent = getModulePercent(mod.id);
   const firstUnlocked = mod.topics.find((t) => !isTopicLocked(mod.id, t.id) && getTopicProgress(mod.id, t.id) < 100);
   const activeTopic = mod.topics.find((t) => t.id === activeTopicId) || firstUnlocked || mod.topics[0];
+  // Kilitli bir bölge seçildiyse sadece adı gösterilir; buton sıradaki açık bölgeye götürür.
+  const activeLocked = isTopicLocked(mod.id, activeTopic.id);
+  const buttonTopic = activeLocked ? (firstUnlocked || mod.topics[0]) : activeTopic;
+  const shortName = (t) => t.title.replace(' Muayenesi', '');
 
   return (
     <PhoneShell>
@@ -50,15 +54,15 @@ export default function BodyAtlas() {
                 const isActive = topic.id === activeTopic.id;
                 return (
                   <button
-                    onClick={() => !locked && setActiveTopicId(topic.id)}
+                    onClick={() => setActiveTopicId(topic.id)}
                     aria-label={topic.title}
                     title={topic.title}
                     style={{
-                      width: '22px', height: '22px', borderRadius: '50%', border: '2px solid #fff', padding: 0,
-                      backgroundColor: complete ? colors.teal : isActive ? colors.coral : colors.card,
-                      color: complete || isActive ? '#fff' : colors.textFaint,
+                      width: '22px', height: '22px', borderRadius: '50%', border: `2px solid ${isActive && locked ? colors.coral : '#fff'}`, padding: 0,
+                      backgroundColor: complete ? colors.teal : isActive && !locked ? colors.coral : colors.card,
+                      color: complete || (isActive && !locked) ? '#fff' : colors.textFaint,
                       display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px',
-                      cursor: locked ? 'default' : 'pointer',
+                      cursor: 'pointer',
                       boxShadow: isActive ? '0 0 0 4px rgba(254,90,60,0.25)' : '0 2px 6px rgba(14,69,80,0.2)',
                     }}
                   >
@@ -89,19 +93,24 @@ export default function BodyAtlas() {
             <div
               style={{
                 display: 'inline-flex', alignItems: 'center', gap: '6px', backgroundColor: colors.card,
-                border: `1.5px solid ${colors.coral}`, borderRadius: '999px', padding: '6px 14px', marginTop: '10px',
-                fontFamily: font.body, fontSize: '12px', fontWeight: 700, color: colors.coral,
+                border: `1.5px solid ${activeLocked ? colors.border : colors.coral}`, borderRadius: '999px', padding: '6px 14px', marginTop: '10px',
+                fontFamily: font.body, fontSize: '12px', fontWeight: 700, color: activeLocked ? colors.textMuted : colors.coral,
               }}
             >
-              {activeTopic.title}
+              {activeLocked && '🔒 '}{activeTopic.title}
             </div>
+          )}
+          {activeLocked && buttonTopic && (
+            <p style={{ fontFamily: font.body, fontSize: '11.5px', color: colors.textMuted, textAlign: 'center', margin: '6px 0 0 0' }}>
+              Bu bölüm sırası gelince açılacak. Sıradaki bölüm: <strong>{buttonTopic.title}</strong>
+            </p>
           )}
         </div>
 
         <div style={{ padding: '18px 26px 26px 26px', width: '100%', boxSizing: 'border-box' }}>
-          {activeTopic && (
-            <PrimaryButton onClick={() => navigate(`/module/${mod.id}/${activeTopic.id}`)}>
-              {getTopicProgress(mod.id, activeTopic.id) > 0 ? `${activeTopic.title.replace('Muayenesi', '')} Muayenesine Devam Et` : `${activeTopic.title.replace(' Muayenesi', '')} Muayenesine Başla`}
+          {buttonTopic && (
+            <PrimaryButton onClick={() => navigate(`/module/${mod.id}/${buttonTopic.id}`)}>
+              {getTopicProgress(mod.id, buttonTopic.id) > 0 ? `${shortName(buttonTopic)} Muayenesine Devam Et` : `${shortName(buttonTopic)} Muayenesine Başla`}
             </PrimaryButton>
           )}
           <p style={{ fontFamily: font.body, fontSize: '11px', color: colors.textFaint, textAlign: 'center', marginTop: '10px' }}>

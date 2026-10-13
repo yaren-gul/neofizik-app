@@ -1,8 +1,8 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
-import { colors } from '../theme';
+import { colors, font } from '../theme';
 
 const MODEL_URL = '/models/baby.glb';
 
@@ -18,6 +18,7 @@ export default function Baby3D({ maxWidth = 300, height = 320, points = [], rend
   const pointRefs = useRef({});
   const focusRef = useRef(focusHead);
   const pointsRef = useRef(points);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     focusRef.current = focusHead;
@@ -154,7 +155,10 @@ export default function Baby3D({ maxWidth = 300, height = 320, points = [], rend
     // --- Gerçekçi model (opsiyonel) ---
     // public/models/baby.glb varsa yüklenir ve yukarıdaki basit model gizlenir.
     // Model otomatik ölçeklenir (boy ~4 birim, ayak tabanı y=-1.95, ortalanmış).
+    // Yüklenene kadar hiçbir model gösterilmez (eski basit bebek bir an görünmesin);
+    // gerçekçi model yüklenemezse yedek olarak basit model gösterilir.
     let disposed = false;
+    baby.visible = false;
     new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).load(MODEL_URL, (gltf) => {
       if (disposed) return;
       const model = gltf.scene;
@@ -172,7 +176,13 @@ export default function Baby3D({ maxWidth = 300, height = 320, points = [], rend
       });
       baby.children.forEach((c) => { c.visible = false; });
       baby.add(model);
-    }, undefined, () => { /* model dosyası yoksa basit model kalır */ });
+      baby.visible = true;
+      setLoading(false);
+    }, undefined, () => {
+      if (disposed) return;
+      baby.visible = true;
+      setLoading(false);
+    });
 
     // --- Sürükleyerek döndürme ---
     let yaw = 0;
@@ -246,7 +256,7 @@ export default function Baby3D({ maxWidth = 300, height = 320, points = [], rend
         tmp.project(camera);
         const x = (tmp.x * 0.5 + 0.5) * width;
         const y = (-tmp.y * 0.5 + 0.5) * height;
-        const inView = x > 6 && x < width - 6 && y > 6 && y < height - 6;
+        const inView = baby.visible && x > 6 && x < width - 6 && y > 6 && y < height - 6;
         el.style.transform = `translate(${x}px, ${y}px) translate(-50%, -50%)`;
         el.style.opacity = facing && inView ? '1' : '0';
         el.style.pointerEvents = facing && inView ? 'auto' : 'none';
@@ -278,6 +288,12 @@ export default function Baby3D({ maxWidth = 300, height = 320, points = [], rend
       aria-label="3D yenidoğan modeli — döndürmek için sürükleyin"
       style={{ position: 'relative', width: '100%', maxWidth, height, margin: '0 auto', overflow: 'hidden', touchAction: 'pan-y', cursor: 'grab', userSelect: 'none' }}
     >
+      {loading && (
+        <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '10px', pointerEvents: 'none' }}>
+          <div className="baby3d-spinner" />
+          <span style={{ fontFamily: font.body, fontSize: '12px', color: colors.textMuted }}>3D model yükleniyor…</span>
+        </div>
+      )}
       {points.map(({ id }) => (
         <div
           key={id}

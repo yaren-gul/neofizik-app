@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { colors, radius, shadow, font } from '../theme';
+import { useIsPhoneLayout, safeArea } from '../utils/platform';
+import { PowerIcon } from './ui';
 
 const HIDDEN_PATHS = ['/', '/login', '/register'];
 
@@ -9,10 +11,17 @@ export function PhoneShell({ children, scroll = true }) {
   const location = useLocation();
   const [confirmOpen, setConfirmOpen] = useState(false);
   const showClose = !HIDDEN_PATHS.includes(location.pathname);
+  // Telefonda tam ekran; bilgisayarda önizleme için telefon çerçevesi
+  const isPhone = useIsPhoneLayout();
 
   return (
     <div
-      style={{
+      style={isPhone ? {
+        height: '100dvh',
+        width: '100%',
+        backgroundColor: colors.cream,
+        fontFamily: font.body,
+      } : {
         minHeight: '100vh',
         width: '100%',
         display: 'flex',
@@ -25,7 +34,15 @@ export function PhoneShell({ children, scroll = true }) {
       }}
     >
       <div
-        style={{
+        style={isPhone ? {
+          width: '100%',
+          height: '100%',
+          backgroundColor: colors.cream,
+          position: 'relative',
+          overflow: 'hidden',
+          display: 'flex',
+          flexDirection: 'column',
+        } : {
           width: '375px',
           maxWidth: '100%',
           height: '780px',
@@ -40,8 +57,8 @@ export function PhoneShell({ children, scroll = true }) {
           flexDirection: 'column',
         }}
       >
-        {/* Notch */}
-        <div
+        {/* Notch (sadece bilgisayardaki önizleme çerçevesinde) */}
+        {!isPhone && <div
           style={{
             position: 'absolute',
             top: 0,
@@ -54,7 +71,7 @@ export function PhoneShell({ children, scroll = true }) {
             borderBottomRightRadius: '18px',
             zIndex: 20,
           }}
-        />
+        />}
 
         {showClose && (
           <button
@@ -63,7 +80,7 @@ export function PhoneShell({ children, scroll = true }) {
             title="Çıkış"
             style={{
               position: 'absolute',
-              top: '14px',
+              top: isPhone ? `calc(${safeArea.top} + 6px)` : '14px',
               right: '14px',
               width: '28px',
               height: '28px',
@@ -71,8 +88,7 @@ export function PhoneShell({ children, scroll = true }) {
               border: 'none',
               backgroundColor: 'rgba(14,69,80,0.35)',
               color: '#fff',
-              fontSize: '14px',
-              lineHeight: 1,
+              padding: 0,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -80,7 +96,7 @@ export function PhoneShell({ children, scroll = true }) {
               zIndex: 25,
             }}
           >
-            ⏻
+            <PowerIcon size={14} color="#fff" />
           </button>
         )}
 
@@ -158,7 +174,9 @@ export function PhoneShell({ children, scroll = true }) {
             overflowY: scroll ? 'auto' : 'hidden',
             display: 'flex',
             flexDirection: 'column',
-            paddingTop: '38px',
+            // Bilgisayardaki çerçevede çentik için 38px; telefonda sadece durum çubuğu + küçük pay
+            paddingTop: isPhone ? `calc(${safeArea.top} + 8px)` : '38px',
+            paddingBottom: isPhone ? safeArea.bottom : 0,
           }}
         >
           {children}

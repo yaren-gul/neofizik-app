@@ -14,7 +14,7 @@ function Results() {
   return (
     <PhoneShell>
       <Screen align="center">
-        <div style={{ flex: 1 }} />
+        <div style={{ flex: 0.5 }} />
 
         <div
           style={{

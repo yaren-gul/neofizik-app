@@ -1,4 +1,4 @@
-// NeoFizik Tasarım Sistemi
+// NeonaFizik Tasarım Sistemi
 // Renkler, word dosyasındaki mockup görsellerinden piksel örneklemesiyle çıkarılmıştır.
 
 export const colors = {

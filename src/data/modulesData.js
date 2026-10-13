@@ -1,4 +1,4 @@
-// NeoFizik eğitim modülleri veri modeli.
+// NeonaFizik eğitim modülleri veri modeli.
 // "reflexes" modülündeki 10 refleks word dosyasındaki mockuptan birebir alınmıştır.
 // "exam" (Baştan Ayağa Fizik Muayene) modülündeki vücut bölgeleri mockup'ta yalnızca
 // "Baş Muayenesi" ve "Yüz Muayenesi" olarak görüldü — geri kalanı standart yenidoğan

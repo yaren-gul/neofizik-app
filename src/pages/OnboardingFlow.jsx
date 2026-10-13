@@ -12,7 +12,7 @@ const TOTAL_STEPS = 4;
 /* ---------- Adım 1: Hoş Geldiniz ---------- */
 function StepWelcome() {
   const items = [
-    'NeoFizik, ebelik öğrencilerine erken yenidoğan döneminde fizik muayenenin sistematik biçimde öğrenilmesine yönelik eğitim içeriği sunmak amacıyla geliştirilmiştir.',
+    'NeonaFizik, ebelik öğrencilerine erken yenidoğan döneminde fizik muayenenin sistematik biçimde öğrenilmesine yönelik eğitim içeriği sunmak amacıyla geliştirilmiştir.',
     'Uygulamada yenidoğanın muayene bölgelerine ilişkin bilgi kartları, normal ve anormal bulguları gösteren görseller ve eğitim videoları yer almaktadır.',
     'Eğitim öncesinde ve sonrasında gerçekleştirilecek değerlendirmeler aracılığıyla öğrencilerin öğrenme süreci incelenecektir.',
   ];
@@ -198,7 +198,7 @@ export default function OnboardingFlow() {
   const navigate = useNavigate();
 
   const titles = [
-    'NeoFizik’e Hoş Geldiniz',
+    'NeonaFizik’e Hoş Geldiniz',
     'Uygulamayı Nasıl Kullanacaksınız?',
     'Eğitim Süreci Nasıl İlerleyecek?',
     'Aydınlatılmış Onam',
